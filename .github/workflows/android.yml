@@ -3,6 +3,8 @@ name: Build and Release Android APK
 on:
   push:
     branches: [ "main", "master" ]
+    tags:
+      - 'v*'
   workflow_dispatch:
 
 permissions:
@@ -28,7 +30,7 @@ jobs:
       - name: Build Debug APK
         run: gradle assembleDebug
 
-      - name: Rename APK for Release
+      - name: Prepare APK Output
         run: |
           mkdir -p release_output
           cp app/build/outputs/apk/debug/app-debug.apk release_output/krishimitra.apk
@@ -39,11 +41,11 @@ jobs:
           name: krishimitra-apk
           path: release_output/krishimitra.apk
 
-      - name: Publish Direct APK to GitHub Releases
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: latest
-          name: "Direct Download APK"
+          tag_name: v1.0.0
+          name: "Krishimitra App v1.0.0"
           body: "Directly installable APK file for Android."
           files: release_output/krishimitra.apk
         env:
